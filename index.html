@@ -1,1 +1,411 @@
-
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ENEMIA - Seu Assistente de Estudos</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f5f7fb;
+      color: #172033;
+      min-height: 100vh;
+    }
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 16px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .header-content {
+      max-width: 1000px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 22px;
+      font-weight: 800;
+      color: #2563eb;
+    }
+    .logo-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #2563eb;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    .badge {
+      font-size: 12px;
+      color: #64748b;
+      background: #f1f5f9;
+      padding: 7px 10px;
+      border-radius: 20px;
+    }
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 55px 20px 100px;
+    }
+    .hero {
+      text-align: center;
+      margin-bottom: 35px;
+    }
+    .hero h1 {
+      font-size: 42px;
+      margin-bottom: 12px;
+      letter-spacing: -1px;
+    }
+    .hero h1 span {
+      color: #2563eb;
+    }
+    .hero p {
+      color: #64748b;
+      font-size: 17px;
+      line-height: 1.6;
+      max-width: 650px;
+      margin: auto;
+    }
+    .chat-card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      overflow: hidden;
+    }
+    .chat-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+    }
+    .status {
+      width: 9px;
+      height: 9px;
+      background: #22c55e;
+      border-radius: 50%;
+    }
+    #messages {
+      min-height: 300px;
+      max-height: 500px;
+      overflow-y: auto;
+      padding: 22px;
+    }
+    .message {
+      display: flex;
+      margin-bottom: 18px;
+    }
+    .message.user {
+      justify-content: flex-end;
+    }
+    .bubble {
+      max-width: 78%;
+      padding: 13px 16px;
+      border-radius: 16px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+    .assistant .bubble {
+      background: #f1f5f9;
+      color: #172033;
+      border-bottom-left-radius: 5px;
+    }
+    .user .bubble {
+      background: #2563eb;
+      color: white;
+      border-bottom-right-radius: 5px;
+    }
+    .welcome {
+      text-align: center;
+      padding: 45px 20px;
+      color: #64748b;
+    }
+    .welcome-icon {
+      font-size: 42px;
+      margin-bottom: 15px;
+    }
+    .welcome h2 {
+      color: #172033;
+      margin-bottom: 8px;
+    }
+    .suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .suggestion {
+      border: 1px solid #dbe3ef;
+      background: white;
+      padding: 9px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      color: #334155;
+    }
+    .suggestion:hover {
+      background: #eff6ff;
+      border-color: #93c5fd;
+    }
+    .input-area {
+      border-top: 1px solid #e5e7eb;
+      padding: 15px;
+      background: #ffffff;
+    }
+    .input-box {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+    textarea {
+      flex: 1;
+      resize: none;
+      min-height: 50px;
+      max-height: 130px;
+      border: 1px solid #dbe3ef;
+      border-radius: 14px;
+      padding: 14px;
+      outline: none;
+      font-family: inherit;
+      font-size: 15px;
+    }
+    textarea:focus {
+      border-color: #2563eb;
+    }
+    button {
+      border: none;
+      cursor: pointer;
+    }
+    #send {
+      width: 50px;
+      height: 50px;
+      border-radius: 14px;
+      background: #2563eb;
+      color: white;
+      font-size: 20px;
+    }
+    #send:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 25px;
+      color: #94a3b8;
+      font-size: 12px;
+    }
+    .typing {
+      display: inline-flex;
+      gap: 4px;
+    }
+    .typing span {
+      width: 6px;
+      height: 6px;
+      background: #64748b;
+      border-radius: 50%;
+      animation: bounce 1s infinite;
+    }
+    .typing span:nth-child(2) {
+      animation-delay: .15s;
+    }
+    .typing span:nth-child(3) {
+      animation-delay: .3s;
+    }
+    @keyframes bounce {
+      0%, 60%, 100% {
+        transform: translateY(0);
+      }
+      30% {
+        transform: translateY(-5px);
+      }
+    }
+    @media (max-width: 600px) {
+      main {
+        padding-top: 35px;
+      }
+      .hero h1 {
+        font-size: 32px;
+      }
+      .hero p {
+        font-size: 15px;
+      }
+      .bubble {
+        max-width: 88%;
+      }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-content">
+    <div class="logo">
+      <div class="logo-icon">E</div>
+      ENEMIA
+    </div>
+    <div class="badge">Assistente de Estudos</div>
+  </div>
+</header>
+<main>
+  <section class="hero">
+    <h1>Estude melhor com o <span>ENEMIA</span></h1>
+    <p>
+      Seu assistente inteligente para tirar dúvidas, revisar conteúdos
+      e se preparar para o ENEM.
+    </p>
+  </section>
+  <section class="chat-card">
+    <div class="chat-header">
+      <span class="status"></span>
+      ENEMIA
+    </div>
+    <div id="messages">
+      <div class="welcome" id="welcome">
+        <div class="welcome-icon">🎓</div>
+        <h2>Olá! Eu sou o ENEMIA.</h2>
+        <p>Como posso ajudar você nos estudos?</p>
+        <div class="suggestions">
+          <button class="suggestion" onclick="useSuggestion('Explique fotossíntese de forma simples')">
+            🌱 Fotossíntese
+          </button>
+          <button class="suggestion" onclick="useSuggestion('Me explique a Primeira Guerra Mundial')">
+            📚 História
+          </button>
+          <button class="suggestion" onclick="useSuggestion('Como resolver uma questão de matemática do ENEM?')">
+            ➗ Matemática
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="input-area">
+      <div class="input-box">
+        <textarea
+          id="question"
+          placeholder="Digite sua pergunta..."
+          rows="1"
+        ></textarea>
+        <button id="send" onclick="sendMessage()">➤</button>
+      </div>
+    </div>
+  </section>
+  <div class="footer">
+    ENEMIA • Seu assistente de estudos
+  </div>
+</main>
+<script>
+  const questionInput = document.getElementById("question");
+  const sendButton = document.getElementById("send");
+  const messages = document.getElementById("messages");
+  function useSuggestion(text) {
+    questionInput.value = text;
+    questionInput.focus();
+  }
+  function addMessage(text, type) {
+    const welcome = document.getElementById("welcome");
+    if (welcome) {
+      welcome.remove();
+    }
+    const message = document.createElement("div");
+    message.className = "message " + type;
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+    bubble.textContent = text;
+    message.appendChild(bubble);
+    messages.appendChild(message);
+    messages.scrollTop = messages.scrollHeight;
+  }
+  function addTyping() {
+    const message = document.createElement("div");
+    message.className = "message assistant";
+    message.id = "typing";
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+    bubble.innerHTML = `
+      <div class="typing">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    `;
+    message.appendChild(bubble);
+    messages.appendChild(message);
+    messages.scrollTop = messages.scrollHeight;
+  }
+  function removeTyping() {
+    const typing = document.getElementById("typing");
+    if (typing) {
+      typing.remove();
+    }
+  }
+  async function sendMessage() {
+    const question = questionInput.value.trim();
+    if (!question) return;
+    addMessage(question, "user");
+    questionInput.value = "";
+    sendButton.disabled = true;
+    addTyping();
+    try {
+      /*
+        IMPORTANTE:
+        O ENEMIA não coloca a OPENAI_API_KEY neste arquivo.
+        A chamada da OpenAI deverá ser feita por uma função
+        segura do Netlify.
+        Quando essa função estiver configurada, este endereço:
+        
+        /api/chat
+        receberá a pergunta e devolverá a resposta.
+      */
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          message: question
+        })
+      });
+      if (!response.ok) {
+        throw new Error("Erro na API");
+      }
+      const data = await response.json();
+      removeTyping();
+      addMessage(
+        data.reply || "Não consegui gerar uma resposta.",
+        "assistant"
+      );
+    } catch (error) {
+      removeTyping();
+      addMessage(
+        "O site está funcionando, mas o sistema de inteligência artificial ainda precisa ser conectado. Vamos configurar essa parte agora.",
+        "assistant"
+      );
+    } finally {
+      sendButton.disabled = false;
+      questionInput.focus();
+    }
+  }
+  questionInput.addEventListener("keydown", function(event) {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      sendMessage();
+    }
+  });
+</script>
+</body>
+</html>
