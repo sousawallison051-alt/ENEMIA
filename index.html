@@ -392,8 +392,8 @@
     } catch (error) {
       removeTyping();
       addMessage(
-        "O site está funcionando, mas o sistema de inteligência artificial ainda precisa ser conectado. Vamos configurar essa parte agora.",
-        "assistant"
+       "Erro ao conectar com a IA: " + error.message,
+"assistant"
       );
     } finally {
       sendButton.disabled = false;
