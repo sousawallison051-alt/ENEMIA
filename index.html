@@ -381,8 +381,9 @@
         })
       });
       if (!response.ok) {
-        throw new Error("Erro na API");
-      }
+  const errorData = await response.json();
+  throw new Error(errorData.error || "Erro na API");
+}
       const data = await response.json();
       removeTyping();
       addMessage(
